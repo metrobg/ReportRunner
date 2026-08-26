@@ -70,11 +70,75 @@
                 </configuration>
             </plugin>
             <plugin>
+                <!--
+                  jackson-annotations, woodstox-core, and stax2-api ship a
+                  module-info.class (Java 9+ JPMS descriptor) that Tomcat's
+                  bundled BCEL-based annotation scanner cannot parse, throwing
+                  ClassFormatException and aborting context startup. None of
+                  these jars contain @WebServlet/@WebFilter/@WebListener
+                  annotations Tomcat needs to discover, so strip module-info.class
+                  from them at build time rather than requiring a server-side
+                  catalina.properties change. Sourced straight from the local
+                  repo (not WEB-INF/lib) since that's populated before the war
+                  plugin runs, avoiding any dependency on packaging phase order.
+                -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>strip-module-info</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="stripped" value="${project.build.directory}/stripped-lib"/>
+                                <property name="workdir" value="${project.build.directory}/module-info-strip"/>
+                                <mkdir dir="${stripped}"/>
+
+                                <macrodef name="strip-module-info-from-jar">
+                                    <attribute name="srcjar"/>
+                                    <attribute name="jarname"/>
+                                    <sequential>
+                                        <delete dir="${workdir}/@{jarname}"/>
+                                        <unzip src="@{srcjar}" dest="${workdir}/@{jarname}">
+                                            <patternset>
+                                                <exclude name="module-info.class"/>
+                                                <exclude name="META-INF/versions/*/module-info.class"/>
+                                            </patternset>
+                                        </unzip>
+                                        <zip destfile="${stripped}/@{jarname}" basedir="${workdir}/@{jarname}"/>
+                                    </sequential>
+                                </macrodef>
+
+                                <strip-module-info-from-jar
+                                    srcjar="${settings.localRepository}/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar"
+                                    jarname="jackson-annotations-2.15.3.jar"/>
+                                <strip-module-info-from-jar
+                                    srcjar="${settings.localRepository}/com/fasterxml/woodstox/woodstox-core/6.5.1/woodstox-core-6.5.1.jar"
+                                    jarname="woodstox-core-6.5.1.jar"/>
+                                <strip-module-info-from-jar
+                                    srcjar="${settings.localRepository}/org/codehaus/woodstox/stax2-api/4.2.1/stax2-api-4.2.1.jar"
+                                    jarname="stax2-api-4.2.1.jar"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <webResources>
+                        <resource>
+                            <directory>${project.build.directory}/stripped-lib</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
         </plugins>
