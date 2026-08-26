@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>GMS Run Jasper Report from Post</title>
+</head>
+<body>
+
+<form method="post" action="http://127.0.0.1:8080/ReportRunner">
+    <p>
+        <b><font size="6" color="#0000FF">Run a Jasper Report from a Servlet</font></b>
+    </p>
+
+    <table border="0" height="1" width="99%">
+        <tbody>
+
+        <tr>
+            <td height="1" width="16%">
+
+                <b><font size="3">DatabaseKey:&nbsp;</font></b>
+            </td>
+
+            <td height="1" width="20%">
+                <p><font size="3">
+                    <input style="background-color: rgb(255, 255, 160);" name="dbkey" size="48" type="text" value="HMI"></font></p>
+            </td>
+        </tr>
+
+        <tr>
+
+            <td height="1" width="16%">
+                <p><b>R<font size="3">eport Template:&nbsp;</font></b></p>
+            </td>
+
+            <td height="1" width="20%">
+                <p><font size="3">
+                    <input style="background-color: rgb(255, 255, 160);" name="template" size="48" type="text"></font></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td height="30" width="16%">
+                <p><b>O<font size="3">utput Format:&nbsp;</font></b></p>
+            </td>
+
+            <td height="30" width="22%">
+                <p><font size="3">
+                    <input style="background-color: rgb(255, 255, 160);" name="output" size="48" type="text" ></font></p>
+
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" height="46" width="1%">
+                <p><input value="Run Report" name="Submit" style="font-size: 12pt; font-weight: bold;" type="submit"></p>
+
+            </td>
+        </tr>
+
+        </tbody></table>
+</form>
+</body>
+</html>

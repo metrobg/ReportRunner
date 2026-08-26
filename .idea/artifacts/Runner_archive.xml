@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Runner archive">
+    <output-path>$USER_HOME$/apache-tomcat-10.1.18/webapps/</output-path>
+    <root id="archive" name="Runner archive.war" />
+  </artifact>
+</component>

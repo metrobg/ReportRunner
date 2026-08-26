@@ -1,0 +1,11 @@
+<!-- Connections.xml.sample -->
+<!-- Copy to Connections.xml and fill in real credentials. Connections.xml is gitignored. -->
+<connections>
+    <connection name="GMS">
+        <username>CHANGE_ME</username>
+        <password>CHANGE_ME</password>
+        <dburl>jdbc:oracle:thin:@HOST:PORT/SERVICE_NAME</dburl>
+        <driver>oracle.jdbc.driver.OracleDriver</driver>
+        <folder>C:\public\reports\</folder>
+    </connection>
+</connections>

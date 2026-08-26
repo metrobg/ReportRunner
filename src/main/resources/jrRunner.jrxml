@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="GuardianTypeReport" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="238b64a3-7da2-4d3f-96d1-fc9fff15ecdb">
+    <property name="ireport.zoom" value="2.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="TYPE" class="java.lang.String">
+        <defaultValueExpression><![CDATA[5]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+        ward_number,
+        ward_name,
+        ward_ward_status,
+        ward_dog,
+        g.description,
+        decode(w.ward_sex, 'M', 'Male', 'F', 'Female')               ward_sex,
+        pt.description placement
+        FROM
+        ward            w,
+        guardian_type   g,
+        placement_type  pt
+        WHERE
+        ward_number < 990000
+        AND g.code = w.ward_guardian_type
+        AND w.ward_guardian_type LIKE $P{TYPE}
+        AND pt.code = w.ward_placement
+        AND ward_ward_status IN (
+        'A',
+        'T',
+        'M',
+        'L',
+        'E'
+        )
+        ORDER BY 5,
+        ward_name]]>
+    </queryString>
+    <field name="WARD_NUMBER" class="java.math.BigDecimal"/>
+    <field name="WARD_NAME" class="java.lang.String"/>
+    <field name="WARD_WARD_STATUS" class="java.lang.String"/>
+    <field name="WARD_DOG" class="java.sql.Timestamp"/>
+    <field name="DESCRIPTION" class="java.lang.String"/>
+    <field name="WARD_SEX" class="java.lang.String"/>
+    <field name="PLACEMENT" class="java.lang.String"/>
+    <background>
+        <band/>
+    </background>
+    <pageHeader>
+        <band height="56">
+            <frame>
+            <reportElement mode="Opaque" x="0" y="0" width="572" height="50" backcolor="#006699" uuid="0b6b6608-bf5d-48d0-bc9c-1fcdcb3247fa"/>
+            <staticText>
+                <reportElement x="0" y="4" width="572" height="16" forecolor="#FFFFFF" uuid="2140b3d0-43e0-43c4-9ef1-b2133bc8783a"/>
+                <textElement textAlignment="Center">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Guardian Management System]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="22" width="572" height="15" forecolor="#FFFFFF" uuid="ebddb1d0-0b50-4eda-9347-c88b2177e776"/>
+                <textElement textAlignment="Center">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Guardian Type Report]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="459" y="4" width="113" height="12" forecolor="#FFFFFF" uuid="1828b7c7-4228-4723-8c2b-520520c56e15"/>
+                <textElement textAlignment="Center">
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[Guardianship Program]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="459" y="18" width="113" height="12" forecolor="#FFFFFF" uuid="b2474094-3121-481b-9bde-aeb0bac4a9fe"/>
+                <textElement textAlignment="Center">
+                    <font size="8"/>
+                </textElement>
+                <text><![CDATA[of Dade County, Inc.]]></text>
+            </staticText>
+            </frame>
+        </band>
+    </pageHeader>
+    <columnHeader>
+        <band height="30">
+            <line>
+                <reportElement x="0" y="20" width="572" height="1" forecolor="#666666" uuid="3434b0ee-997c-4707-99f4-0c7cc5127dec"/>
+            </line>
+            <frame>
+            <reportElement mode="Opaque" x="0" y="1" width="572" height="27" backcolor="#E6E6E6" uuid="2501e0fd-ac3f-4767-aeac-ce2228a58600"/>
+            <staticText>
+                <reportElement mode="Opaque" x="0" y="7" width="39" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="26e18504-0a4e-4374-8b8a-3be7104c6fc3"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Ward#]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="54" y="7" width="81" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="9f6058bc-1d17-46d0-b315-eb9f8b7a32db"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Ward Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="178" y="7" width="38" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="047bbac8-5f26-4a73-a14f-5c31d112be6c"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="221" y="7" width="44" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="13d6f798-c1b9-4266-ae9e-6912b8958815"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[DOG]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="301" y="7" width="61" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="93de3644-cab2-4dfc-a96a-8a71a008dc40"/>
+                <textElement textAlignment="Left">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Type]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="366" y="7" width="57" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="47406222-6dff-4ea9-9dc1-6e8a85b1bfbc"/>
+                <textElement textAlignment="Left">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Sex]]></text>
+            </staticText>
+            <staticText>
+                <reportElement mode="Opaque" x="444" y="7" width="54" height="13" forecolor="#006699" backcolor="#E6E6E6" uuid="4eb9db74-1812-449d-9e39-427256145b2b"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Placement]]></text>
+            </staticText>
+            </frame>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="16">
+            <line>
+                <reportElement positionType="FixRelativeToBottom" x="0" y="14" width="572" height="1" uuid="27607c58-2527-4595-9181-3743c2fc7023"/>
+            </line>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="0" y="0" width="39" height="13" uuid="b232df66-5558-485a-b02c-3a9a4846f154"/>
+                <textElement textAlignment="Right">
+                    <font size="9"/>
+                    <paragraph rightIndent="2"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{WARD_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="46" y="0" width="137" height="13" uuid="09165117-a997-49d2-8cfb-f4798c6060f8"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{WARD_NAME}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="189" y="0" width="21" height="13" uuid="4842b488-7f18-4d2b-b7d5-21250f43eddd"/>
+                <textElement textAlignment="Center">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{WARD_WARD_STATUS}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="MM/dd/yyyy">
+                <reportElement x="220" y="0" width="54" height="13" uuid="e5b66613-980a-4f9c-9a14-998b871bb945"/>
+                <textElement textAlignment="Center">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{WARD_DOG}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="301" y="0" width="61" height="13" uuid="2be5d059-d70b-4a0c-9ec5-4459bf1ae86f"/>
+                <textElement>
+                    <font size="9"/>
+                    <paragraph leftIndent="3"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="366" y="0" width="65" height="13" uuid="1796757e-e306-43c3-9bd4-476f0a3ab569"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{WARD_SEX}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="444" y="0" width="128" height="13" uuid="2d3973d0-c77e-4643-a0ea-937227504f82"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{PLACEMENT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band/>
+    </columnFooter>
+    <pageFooter>
+        <band height="17">
+            <textField>
+                <reportElement mode="Opaque" x="0" y="4" width="532" height="13" backcolor="#E6E6E6" uuid="3434ef01-6fbc-41da-a769-e816be29bac5"/>
+                <textElement textAlignment="Right">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement mode="Opaque" x="532" y="4" width="40" height="13" backcolor="#E6E6E6" uuid="b12bca47-b369-4206-bede-8541d90e528f"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField pattern="EEEEE dd MMMMM yyyy">
+                <reportElement x="0" y="4" width="183" height="13" uuid="5c48d3f2-f4ac-46db-bf7e-b30e66f15460"/>
+                <textElement>
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="4" width="572" height="13" uuid="7fd8ca3e-4ae5-4334-a826-7dbd8abecfd0"/>
+                <textElement textAlignment="Center">
+                    <font size="9"/>
+                </textElement>
+                <text><![CDATA[GuardianTypeReport]]></text>
+            </staticText>
+        </band>
+    </pageFooter>
+    <summary>
+        <band height="18">
+            <staticText>
+                <reportElement x="0" y="5" width="70" height="13" uuid="383d8783-da68-48ac-a22c-54c5687994b4"/>
+                <textElement>
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Ward Count:]]></text>
+            </staticText>
+            <textField pattern="#,##0">
+                <reportElement mode="Transparent" x="74" y="5" width="51" height="13" forecolor="#000000" backcolor="#FFFFFF" uuid="df2db33d-67a0-4a7f-b999-31613c1ccb1a"/>
+                <textElement textAlignment="Left" verticalAlignment="Top" rotation="None" markup="none">
+                    <font fontName="SansSerif" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+                    <paragraph lineSpacing="Single"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
