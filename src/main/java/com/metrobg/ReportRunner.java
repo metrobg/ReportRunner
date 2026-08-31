@@ -128,6 +128,8 @@ public class ReportRunner extends HttpServlet {
                 System.out.println("compiling the report") ;
 
             }
+            coerceParameterTypes(jasperReport, map);
+
             connection = DbConn(dbKey);
             System.out.println("acquired connection");
             System.out.flush();
@@ -146,6 +148,44 @@ public class ReportRunner extends HttpServlet {
 
         }
         return jasperPrint;
+    }
+
+    /**
+     * HTTP request parameters arrive as Strings, but a report can declare a
+     * parameter of any type (Integer, BigDecimal, etc). Reports using the
+     * default Java expression language auto-coerce a String into the
+     * declared type, but Groovy-based reports do not - passing a String
+     * where an Integer is declared throws GroovyCastException during fill.
+     * Convert each value to its report-declared type before filling.
+     */
+    private void coerceParameterTypes(JasperReport jasperReport, HashMap<String, Object> map) {
+        for (JRParameter parameter : jasperReport.getParameters()) {
+            String name = parameter.getName();
+            Object value = map.get(name);
+            if (!(value instanceof String) || ((String) value).isEmpty()) {
+                continue;
+            }
+            String stringValue = (String) value;
+            Class<?> valueClass = parameter.getValueClass();
+            try {
+                if (valueClass == Integer.class || valueClass == int.class) {
+                    map.put(name, Integer.valueOf(stringValue.trim()));
+                } else if (valueClass == Long.class || valueClass == long.class) {
+                    map.put(name, Long.valueOf(stringValue.trim()));
+                } else if (valueClass == Double.class || valueClass == double.class) {
+                    map.put(name, Double.valueOf(stringValue.trim()));
+                } else if (valueClass == Float.class || valueClass == float.class) {
+                    map.put(name, Float.valueOf(stringValue.trim()));
+                } else if (valueClass == java.math.BigDecimal.class) {
+                    map.put(name, new java.math.BigDecimal(stringValue.trim()));
+                } else if (valueClass == Boolean.class || valueClass == boolean.class) {
+                    map.put(name, Boolean.valueOf(stringValue.trim()));
+                }
+            } catch (NumberFormatException nfe) {
+                System.out.println("Could not coerce parameter " + name + "='" + stringValue
+                        + "' to " + valueClass.getName() + ": " + nfe.getMessage());
+            }
+        }
     }
 
     public Connection DbConn(String key) throws Exception {
