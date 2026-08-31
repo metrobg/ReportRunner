@@ -119,6 +119,7 @@ public class ReportRunner extends HttpServlet {
             JasperReport jasperReport = null;
 
             compiledReport = new File(Template + ".jasper");
+            SubreportCompiler.compileMissingJaspers(compiledReport.getParentFile());
 
             if (compiledReport.exists()) {
                 jasperReport = (JasperReport) JRLoader.loadObject(compiledReport);

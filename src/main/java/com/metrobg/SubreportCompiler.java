@@ -1,65 +1,42 @@
 package com.metrobg;
 
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.engine.util.JRElementsVisitor;
-import net.sf.jasperreports.engine.util.JRVisitorSupport;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FilenameFilter;
 
+/**
+ * Subreports are referenced by their compiled .jasper filename
+ * (e.g. $P{SUBREPORT_DIR} + "Report-P2.jasper"), but report folders on this
+ * server often only carry the .jrxml source. Compile any .jrxml in a folder
+ * that doesn't already have a matching .jasper, so subreport chains resolve
+ * without requiring every subreport to be precompiled and uploaded by hand.
+ */
 public class SubreportCompiler {
 
- //   public static void main(String[] args) throws Exception {
- public static void Initmain(String[] args) throws Exception {
+    public static void compileMissingJaspers(File folder) {
+        if (folder == null || !folder.isDirectory()) {
+            return;
+        }
 
-        // Replace with your main report's JRXML path
-        InputStream mainReportInputStream = ClassLoader.getSystemResourceAsStream("main_report.jrxml");
+        File[] jrxmlFiles = folder.listFiles((FilenameFilter) (dir, name) -> name.toLowerCase().endsWith(".jrxml"));
+        if (jrxmlFiles == null) {
+            return;
+        }
 
-        // Load the main report design
-        JasperDesign design = JRXmlLoader.load(mainReportInputStream);
-
-        // Compile the main report
-        JasperReport compiledReport = JasperCompileManager.compileReport(design);
-
-        // Compile subreports
-        compileSubreports(compiledReport);
-
-        // Fill and export the report
-        // (Example code for filling and exporting, replace with your logic)
-        Map<String, Object> parameters = new HashMap<>();
-        JasperPrint jasperPrint = JasperFillManager.fillReport(compiledReport, parameters, new JRBeanCollectionDataSource(new java.util.ArrayList<>()));
-        JasperExportManager.exportReportToPdfFile(jasperPrint.toString(), "output.pdf");
-    }
-
-    public static void compileSubreports(JasperReport report) throws Exception {
-
-        // Iterate through all subreports in the main report
-        JRElementsVisitor.visitReport(report, new JRVisitorSupport() {
-            @Override
-            public void visitSubreport(JRSubreport subreport) {
-                // You might want to check if the subreport is actually a subreport
-                // before attempting to compile it.  For example, you could check
-                // if the subreport's report expression returns a non-null JasperReport
-                // when you call the subreport's getReportExpression() method
-
-                // Replace with your subreport's JRXML path or method to retrieve it
-                // (e.g., from a database)
-                InputStream subreportInputStream = null; // Get InputStream for subreport
-
-                if (subreport != null) {
-                    // Compile the subreport
-                    try {
-                        JasperReport compiledSubreport = JasperCompileManager.compileReport(subreportInputStream);
-                        // You can save the compiled subreport to file or use it as needed
-                    } catch (JRException e) {
-                        e.printStackTrace();
-                    }
-                }
+        for (File jrxmlFile : jrxmlFiles) {
+            String baseName = jrxmlFile.getName().substring(0, jrxmlFile.getName().length() - ".jrxml".length());
+            File jasperFile = new File(folder, baseName + ".jasper");
+            if (jasperFile.exists()) {
+                continue;
             }
-        });
+            try {
+                System.out.println("Compiling subreport: " + jrxmlFile.getAbsolutePath());
+                JasperCompileManager.compileReportToFile(jrxmlFile.getAbsolutePath(), jasperFile.getAbsolutePath());
+            } catch (JRException e) {
+                System.out.println("Failed to compile " + jrxmlFile.getAbsolutePath() + ": " + e.getMessage());
+            }
+        }
     }
 }
